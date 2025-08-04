@@ -33,4 +33,7 @@ public class Ingredient {
     // Bidirectional mapping to RecipeIngredient
     @OneToMany(mappedBy = "ingredient", cascade = CascadeType.ALL)
     private List<RecipeIngredient> recipes = new ArrayList<>();
+
+    @Embedded
+    private IngredientProfile profile;
 }
