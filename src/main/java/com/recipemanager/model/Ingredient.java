@@ -20,13 +20,8 @@ public class Ingredient {
 
     private String name;
 
-    private double calories;
-
-    private double protein;
-
-    private double fat;
-
-    private double carbs;
+    @Embedded
+    private IngredientProfile profile;
 
     @Column(length = 2000)
     private String chemicalProfileJson;
@@ -34,6 +29,9 @@ public class Ingredient {
     @OneToMany(mappedBy = "ingredient", cascade = CascadeType.ALL)
     private List<RecipeIngredient> recipes = new ArrayList<>();
 
-    @Embedded
-    private IngredientProfile profile;
+    // Convenience constructor for DataLoader (without id)
+    public Ingredient(String name, IngredientProfile profile) {
+        this.name = name;
+        this.profile = profile;
+    }
 }

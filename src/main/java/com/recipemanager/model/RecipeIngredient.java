@@ -36,4 +36,12 @@ public class RecipeIngredient {
     private double quantity;
 
     private String unit;
+
+    // Convenience constructor for DataLoader (without id)
+    public RecipeIngredient(Recipe recipe, Ingredient ingredient, int i, String unit) {
+        this.recipe = recipe;
+        this.ingredient = ingredient;
+        this.quantity = i;
+        this.unit = unit;
+    }
 }

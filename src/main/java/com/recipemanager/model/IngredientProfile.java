@@ -4,6 +4,7 @@ import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 @Embeddable
 @NoArgsConstructor
@@ -20,7 +21,7 @@ public class IngredientProfile {
     private double moisture;
     private String texture; // creamy, crunchy, fibrous...
 
-    public boolean isSimilar(IngredientProfile alternative, double tolerance) {
+    public boolean isSimilar(@NotNull IngredientProfile alternative, double tolerance) {
         tolerance /= 100;
         boolean nutritionSimilar =
         inTolerance(this.calories, alternative.calories, tolerance) &&
