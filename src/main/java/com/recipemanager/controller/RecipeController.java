@@ -1,7 +1,11 @@
 package com.recipemanager.controller;
 
+import com.recipemanager.dto.RecipeDTO;
+import com.recipemanager.dto.RecipeIngredientDTO;
+import com.recipemanager.mapper.RecipeMapper;
 import com.recipemanager.model.Recipe;
 import com.recipemanager.service.RecipeService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,31 +19,37 @@ import java.util.List;
 public class RecipeController {
 
     private final RecipeService recipeService;
+    private final RecipeMapper recipeMapper;
 
     @GetMapping
-    public List<Recipe> getAllRecipes(){
-        return recipeService.findAll();
+    public List<RecipeDTO> getAllRecipes(){
+        return recipeService.findAll()
+                .stream()
+                .map(recipeMapper::toRecipeDTO)
+                .toList();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Recipe> getRecipe(@PathVariable Long id){
+    public ResponseEntity<RecipeDTO> getRecipe(@PathVariable Long id){
         return recipeService.findById(id)
+                .map(recipeMapper::toRecipeDTO)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<Recipe> saveRecipe(@RequestBody Recipe recipe){
-        Recipe newRecipe = recipeService.save(recipe);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newRecipe);
+    public ResponseEntity<RecipeDTO> saveRecipe(@Valid @RequestBody RecipeDTO recipeDTO){
+        Recipe newRecipe = recipeService.save(recipeMapper.toEntity(recipeDTO));
+        return ResponseEntity.status(HttpStatus.CREATED).body(recipeMapper.toRecipeDTO(newRecipe));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Recipe> updateRecipe(@PathVariable Long id, @RequestBody Recipe recipe){
+    public ResponseEntity<RecipeDTO> updateRecipe(@PathVariable Long id, @Valid @RequestBody RecipeDTO recipeDTO){
         return recipeService.findById(id)
                 .map(existing -> {
-                    Recipe updatedRecipe = recipeService.save(recipe);
-                    return ResponseEntity.ok(updatedRecipe);
+                    Recipe updatedRecipe = recipeService.save(recipeMapper.toEntity(recipeDTO));
+                    updatedRecipe.setId(id);
+                    return ResponseEntity.ok(recipeMapper.toRecipeDTO(updatedRecipe));
                 }).orElse(ResponseEntity.notFound().build());
     }
 
@@ -76,6 +86,15 @@ public class RecipeController {
             return ResponseEntity.ok(updatedRecipe);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/{id}/ingredients")
+    public ResponseEntity<List<RecipeIngredientDTO>> getAllRecipeIngredients(@PathVariable Long id){
+        try{
+            return ResponseEntity.ok(recipeService.getIngredientsForRecipe(id));
+        } catch (IllegalArgumentException e){
+            return ResponseEntity.notFound().build();
         }
     }
 }

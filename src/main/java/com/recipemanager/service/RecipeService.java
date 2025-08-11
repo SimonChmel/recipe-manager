@@ -1,5 +1,6 @@
 package com.recipemanager.service;
 
+import com.recipemanager.dto.RecipeIngredientDTO;
 import com.recipemanager.model.Ingredient;
 import com.recipemanager.model.Recipe;
 import com.recipemanager.model.RecipeIngredient;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -77,5 +79,18 @@ public class RecipeService extends BaseService<Recipe, Long> {
 
     public Optional<Recipe> findByName(String name){
         return recipeRepository.findByName(name);
+    }
+
+    public List<RecipeIngredientDTO> getIngredientsForRecipe(Long recipeId) {
+        Recipe recipe = recipeRepository.findById(recipeId)
+                .orElseThrow(() -> new IllegalArgumentException("Recipe with id " + recipeId + " not found"));
+
+        return recipe.getIngredients().stream()
+                .map(recipeIngredient -> new RecipeIngredientDTO(
+                        recipeIngredient.getIngredient().getId(),
+                        recipeIngredient.getIngredient().getName(),
+                        recipeIngredient.getQuantity(),
+                        recipeIngredient.getUnit()))
+                .toList();
     }
 }

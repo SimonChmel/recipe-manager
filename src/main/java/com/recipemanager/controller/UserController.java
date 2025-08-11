@@ -1,7 +1,10 @@
 package com.recipemanager.controller;
 
+import com.recipemanager.dto.UserDTO;
+import com.recipemanager.mapper.UserMapper;
 import com.recipemanager.model.User;
 import com.recipemanager.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,38 +19,50 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final UserMapper userMapper;
+
+    @GetMapping
+    public List<UserDTO> getUsers() {
+        return userService.findAll()
+                .stream()
+                .map(userMapper::toUserDTO)
+                .toList();
+    }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(@PathVariable Long id){
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id){
         return userService.findById(id)
+                .map(userMapper::toUserDTO)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/{username}")
-    public ResponseEntity<User> getUserByName(@PathVariable String username){
+    public ResponseEntity<UserDTO> getUserByName(@PathVariable String username){
         return userService.findByUsername(username)
+                .map(userMapper::toUserDTO)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/{email}")
-    public ResponseEntity<User> getUserByEmail(@PathVariable String email){
+    public ResponseEntity<UserDTO> getUserByEmail(@PathVariable String email){
         return userService.findByEmail(email)
+                .map(userMapper::toUserDTO)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<User> registerUser(@RequestBody User user){
-        User newUser = userService.registerNewUser(user.getUsername(), user.getEmail(), user.getPassword());
-        return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
+    @PostMapping
+    public ResponseEntity<UserDTO> registerUser(@Valid @RequestBody UserDTO userDTO){
+        User newUser = userService.registerNewUser(userMapper.toEntity(userDTO));
+        return ResponseEntity.status(HttpStatus.CREATED).body(userMapper.toUserDTO(newUser));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user){
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO){
         return userService.findById(id).map(existing -> {
-            User updatedUser = userService.editUser(id, user.getUsername(), user.getEmail(), user.getPassword(), user.getRole());
+            User updatedUser = userService.editUser(id, userMapper.toEntity(userDTO));
             return ResponseEntity.ok(updatedUser);
         }).orElse(ResponseEntity.notFound().build());
     }

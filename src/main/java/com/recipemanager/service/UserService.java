@@ -23,14 +23,14 @@ public class UserService extends BaseService<User, Long> {
         return userRepository;
     }
 
-    public User registerNewUser(String userName, String email, String rawPassword) {
-        if (userRepository.findByUsername(userName).isPresent()) {
-            throw new IllegalArgumentException("Username already exists");
+    public User registerNewUser(User user) {
+        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+            throw new IllegalArgumentException("User already exists");
         }
-        User user = new User();
-        user.setUsername(userName);
-        user.setPassword(passwordEncoder.encode(rawPassword));
-        user.setRole("USER"); // default role
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        if (user.getRole() == null || user.getRole().isBlank()) {
+            user.setRole("USER");
+        }
         return userRepository.save(user);
     }
 
@@ -42,29 +42,22 @@ public class UserService extends BaseService<User, Long> {
         return userRepository.findByEmail(email);
     }
 
-    public User editUser(Long id, String newUserName, String newEmail, String newPassword, String newRole) {
-        User updatedUser = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
-        // username update
-        if (!newUserName.equals(updatedUser.getUsername()) &&
-                userRepository.findByUsername(newUserName).isPresent()) {
-            throw new IllegalArgumentException("Username already exists");
-        }
-        updatedUser.setUsername(newUserName);
-        // password update
-        if (newPassword != null && !newPassword.isBlank()) {
-            updatedUser.setPassword(passwordEncoder.encode(newPassword));
-        }
-        // email update
-        if (newEmail != null && !newEmail.isBlank()) {
-            if (updatedUser.getEmail().equals(newEmail)) {
-                throw new IllegalArgumentException("Email already exists");
-            }
-            updatedUser.setEmail(newEmail);
-        }
-        // update role
-        if (newRole != null && !newRole.isEmpty()) {
-            updatedUser.setRole(newRole);
-        }
-        return userRepository.save(updatedUser);
+    public User editUser(Long id, User updatedUser) {
+        return userRepository.findById(id)
+                .map(existing -> {
+                    if (updatedUser.getUsername() != null && !updatedUser.getUsername().isBlank()) {
+                        existing.setUsername(updatedUser.getUsername());
+                    }
+                    if (updatedUser.getEmail() != null && !updatedUser.getEmail().isBlank()) {
+                        existing.setEmail(updatedUser.getEmail());
+                    }
+                    if (updatedUser.getPassword() != null && !updatedUser.getPassword().isBlank()) {
+                        existing.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+                    }
+                    if (updatedUser.getRole() != null && !updatedUser.getRole().isBlank()) {
+                        existing.setRole(updatedUser.getRole());
+                    }
+                    return userRepository.save(existing);
+                }).orElseThrow(() -> new IllegalArgumentException("User not found"));
     }
 }
