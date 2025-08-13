@@ -3,6 +3,7 @@ package com.recipemanager.model;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ public class Ingredient {
     private String chemicalProfileJson;
     // Bidirectional mapping to RecipeIngredient
     @OneToMany(mappedBy = "ingredient", cascade = CascadeType.ALL)
+    @EqualsAndHashCode.Exclude
     private List<RecipeIngredient> recipes = new ArrayList<>();
 
     // Convenience constructor for DataLoader (without id)

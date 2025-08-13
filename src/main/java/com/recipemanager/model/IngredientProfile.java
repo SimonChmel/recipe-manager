@@ -21,7 +21,7 @@ public class IngredientProfile {
     private double moisture;
     private String texture; // creamy, crunchy, fibrous...
 
-    public boolean isSimilar(@NotNull IngredientProfile alternative, double tolerance) {
+    public boolean isSimilar(IngredientProfile alternative, double tolerance) {
         tolerance /= 100;
         boolean nutritionSimilar =
         inTolerance(this.calories, alternative.calories, tolerance) &&

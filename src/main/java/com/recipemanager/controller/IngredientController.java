@@ -43,7 +43,7 @@ public class IngredientController {
                 }).orElse(ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id]")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteIngredient(@PathVariable Long id){
         ingredientService.deleteById(id);
         return ResponseEntity.noContent().build();
