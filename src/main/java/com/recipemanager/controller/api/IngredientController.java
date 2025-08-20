@@ -1,4 +1,4 @@
-package com.recipemanager.controller;
+package com.recipemanager.controller.api;
 
 import com.recipemanager.model.Ingredient;
 import com.recipemanager.service.IngredientService;

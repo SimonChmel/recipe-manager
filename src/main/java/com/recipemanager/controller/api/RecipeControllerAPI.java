@@ -1,4 +1,4 @@
-package com.recipemanager.controller;
+package com.recipemanager.controller.api;
 
 import com.recipemanager.dto.RecipeDTO;
 import com.recipemanager.dto.RecipeIngredientDTO;
@@ -7,16 +7,15 @@ import com.recipemanager.model.Recipe;
 import com.recipemanager.service.RecipeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/recipes")
 @RequiredArgsConstructor
-public class RecipeController {
+@RequestMapping("/api/recipes")
+public class RecipeControllerAPI {
 
     private final RecipeService recipeService;
     private final RecipeMapper recipeMapper;
@@ -40,7 +39,7 @@ public class RecipeController {
     @PostMapping
     public ResponseEntity<RecipeDTO> saveRecipe(@Valid @RequestBody RecipeDTO recipeDTO){
         Recipe newRecipe = recipeService.save(recipeMapper.toEntity(recipeDTO));
-        return ResponseEntity.status(HttpStatus.CREATED).body(recipeMapper.toRecipeDTO(newRecipe));
+        return ResponseEntity.ok(recipeMapper.toRecipeDTO(newRecipe));
     }
 
     @PutMapping("/{id}")
@@ -69,7 +68,7 @@ public class RecipeController {
         }
     }
 
-    @PostMapping("/{id}/add-ingredient/{ingredientId}")
+    @PostMapping("/{id}/ingredient/add/{ingredientId}")
     public ResponseEntity<Recipe> addIngredient(@PathVariable Long id, @PathVariable Long ingredientId, double quantity, String unit){
         try {
             Recipe updatedRecipe = recipeService.addIngredient(ingredientId, id, quantity, unit);

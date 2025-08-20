@@ -1,4 +1,4 @@
-package com.recipemanager.controller;
+package com.recipemanager.controller.api;
 
 import com.recipemanager.dto.UserDTO;
 import com.recipemanager.mapper.UserMapper;
@@ -6,17 +6,15 @@ import com.recipemanager.model.User;
 import com.recipemanager.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user")
-public class UserController {
+@RequestMapping("/api/users")
+public class UserControllerAPI {
 
     private final UserService userService;
     private final UserMapper userMapper;
@@ -38,7 +36,7 @@ public class UserController {
     }
 
     @GetMapping("/{username}")
-    public ResponseEntity<UserDTO> getUserByName(@PathVariable String username){
+    public ResponseEntity<UserDTO> getUserByUsername(@PathVariable String username){
         return userService.findByUsername(username)
                 .map(userMapper::toUserDTO)
                 .map(ResponseEntity::ok)
@@ -56,7 +54,7 @@ public class UserController {
     @PostMapping
     public ResponseEntity<UserDTO> registerUser(@Valid @RequestBody UserDTO userDTO){
         User newUser = userService.registerNewUser(userMapper.toEntity(userDTO));
-        return ResponseEntity.status(HttpStatus.CREATED).body(userMapper.toUserDTO(newUser));
+        return ResponseEntity.ok(userMapper.toUserDTO(newUser));
     }
 
     @PutMapping("/{id}")
