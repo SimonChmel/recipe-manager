@@ -1,6 +1,6 @@
 <%@ taglib prefix="s" uri="http://www.springframework.org/security/tags" %>
-<jsp:include page="/WEB-INF/views/_layout/header.jsp"/>
-<jsp:include page="/WEB-INF/views/_layout/messages.jsp"/>
+<jsp:include page="/WEB-INF/views/_layout/header.jspf"/>
+<jsp:include page="/WEB-INF/views/messages.jsp"/>
 
 <h2>Edit Recipe</h2>
 <form action="${pageContext.request.contextPath}/recipes/${recipe.id}/edit" method="post">
@@ -13,4 +13,4 @@
 
 <a href="${pageContext.request.contextPath}/recipes">Back to list</a>
 
-<jsp:include page="/WEB-INF/views/_layout/footer.jsp"/>
+<jsp:include page="/WEB-INF/views/_layout/footer.jspf"/>

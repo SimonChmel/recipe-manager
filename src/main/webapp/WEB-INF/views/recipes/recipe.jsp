@@ -1,5 +1,5 @@
-<jsp:include page="/WEB-INF/views/_layout/header.jsp"/>
-<jsp:include page="/WEB-INF/views/_layout/messages.jsp"/>
+<jsp:include page="/WEB-INF/views/_layout/header.jspf"/>
+<jsp:include page="/WEB-INF/views/messages.jsp"/>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="s" %>
 <h2>Recipe Details: ${recipe.name}</h2>
@@ -49,4 +49,4 @@
 
 <a href="${pageContext.request.contextPath}/recipes">Back to Recipes</a>
 
-<jsp:include page="/WEB-INF/views/_layout/footer.jsp"/>
+<jsp:include page="/WEB-INF/views/_layout/footer.jspf"/>

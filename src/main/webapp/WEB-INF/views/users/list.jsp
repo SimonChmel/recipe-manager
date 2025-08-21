@@ -1,32 +1,36 @@
-<jsp:include page="/WEB-INF/views/_layout/header.jsp"/>
-<jsp:include page="/WEB-INF/views/_layout/messages.jsp"/>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://www.springframework.org/security/tags" prefix="s" %>
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
-<h2>All Users</h2>
-<table>
-    <thead>
-    <tr><th>ID</th><th>Username</th><th>Email</th><th>Role</th><th>Actions</th></tr>
-    </thead>
-    <tbody>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>User List</title>
+</head>
+<body>
+
+<%@ include file="/WEB-INF/views/_layout/header.jspf" %>
+
+<h2>User List</h2>
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+    </tr>
     <c:forEach var="user" items="${users}">
         <tr>
-            <td>${user.id}</td>
-            <td>${user.username}</td>
-            <td>${user.email}</td>
-            <td>${user.role}</td>
+            <td><c:out value="${user.id}"/></td>
+            <td><c:out value="${user.username}"/></td>
+            <td><c:out value="${user.email}"/></td>
             <td>
-                <a href="${pageContext.request.contextPath}/users/${user.id}/edit">Edit</a>
-                <form action="${pageContext.request.contextPath}/users/${user.id}/delete" method="post" style="display:inline;">
-                    <s:csrfInput/>
-                    <button type="submit" onclick="return confirm('Delete this user?')">Delete</button>
-                </form>
-            </td>
+            <a href="${pageContext.request.contextPath}/users/form?id=${user.id}">Edit</a>
+            <a href="<c:out value="/users/delete/${user.id}"/>">Delete</a>
+            <a href="<c:out value="/users/user/${user.id}"/>">Show</a>
+        </td>
         </tr>
     </c:forEach>
-    </tbody>
 </table>
-
-<a href="${pageContext.request.contextPath}/users/new">Add User</a>
-
-<jsp:include page="/WEB-INF/views/_layout/footer.jsp"/>
+<a href="${pageContext.request.contextPath}/users/form">Add User</a>
+<%@ include file="/WEB-INF/views/_layout/footer.jspf" %>
+</body>
+</html>

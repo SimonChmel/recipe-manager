@@ -1,31 +1,58 @@
-<jsp:include page="/WEB-INF/views/_layout/header.jsp"/>
-<jsp:include page="/WEB-INF/views/_layout/messages.jsp"/>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://www.springframework.org/security/tags" prefix="s" %>
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
-<h2>Create New User</h2>
-<form action="${pageContext.request.contextPath}/users" method="post">
-    <s:csrfInput/>
-    <div>
-        <label>Username: <input type="text" name="username" value="${user.username}" required/></label>
-    </div>
-    <div>
-        <label>Email: <input type="email" name="email" value="${user.email}" required/></label>
-    </div>
-    <div>
-        <label>Password: <input type="password" name="password" required/></label>
-    </div>
-    <div>
-        <label>Role:
-            <select name="role">
-                <option value="USER">USER</option>
-                <option value="ADMIN">ADMIN</option>
-            </select>
-        </label>
-    </div>
-    <button type="submit">Save</button>
-</form>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
-<a href="${pageContext.request.contextPath}/users">Back to list</a>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>User List</title>
+</head>
+<body>
 
-<jsp:include page="/WEB-INF/views/_layout/footer.jsp"/>
+<%@ include file="/WEB-INF/views/_layout/header.jspf" %>
+
+<h2>
+    <c:choose>
+    <c:when test="${user.id != null}">Edit User</c:when>
+    <c:otherwise>Create User</c:otherwise>
+    </c:choose>
+</h2>
+
+<form:form method="post" modelAttribute="user" action="${pageContext.request.contextPath}/users/save">
+    <form:hidden path="id"/>
+    <table>
+        <tr>
+            <td>Username:</td>
+            <td><form:input path="username"/></td>
+            <td><p><form:errors path="username" cssStyle="color: red"/></p></td>
+
+        <tr>
+            <td>Email:</td>
+            <td><form:input path="email"/></td>
+            <td><form:errors path="email" cssStyle="color: red"/></td>
+
+        </tr>
+        <tr>
+            <td>Password:</td>
+            <td><form:password path="password"/></td>
+            <td><form:errors path="password" cssStyle="color: red"/></td>
+
+        </tr>
+        <tr>
+            <td>Role:</td>
+            <td>
+                <form:select path="role">
+                    <form:option value="" label="--Select Role--" />
+                    <form:options items="${roles}" />
+                </form:select>
+            </td>
+        </tr>
+    </table>
+    <input type="submit" value="<c:choose>
+                                            <c:when test='${user.id != null}'>Update</c:when>
+                                            <c:otherwise>Create</c:otherwise>
+                                         </c:choose>" />
+</form:form>
+<%@ include file="/WEB-INF/views/_layout/footer.jspf" %>
+</body>
+</html>
