@@ -5,9 +5,9 @@ import com.recipemanager.mapper.UserMapper;
 import com.recipemanager.model.User;
 import com.recipemanager.service.UserService;
 import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -33,7 +32,7 @@ public class UserControllerWEB {
 
     @GetMapping("/user/{id}")
     public String getUserById(@PathVariable Long id, Model model) {
-        User user = userService.findById(id).orElseThrow(() -> new NotFoundException("User not found"));
+        User user = userService.findById(id).orElseThrow(EntityNotFoundException::new);
         if (user == null) {
             return "redirect:/users";
         }
@@ -41,15 +40,15 @@ public class UserControllerWEB {
         return "users/user";
     }
 
-    @GetMapping("/user/{username}")
-    public String getUserByUsername(@PathVariable String username, Model model) {
-        User user = userService.findByUsername(username).orElseThrow(() -> new NotFoundException("User not found"));
-        if (user == null) {
-            return "redirect:/users";
-        }
-        model.addAttribute("user", user);
-        return "users/user";
-    }
+//    @GetMapping("/user/{username}")
+//    public String getUserByUsername(@PathVariable String username, Model model) {
+//        User user = userService.findByUsername(username).orElseThrow(EntityNotFoundException::new);
+//        if (user == null) {
+//            return "redirect:/users";
+//        }
+//        model.addAttribute("user", user);
+//        return "users/user";
+//    }
 
     @GetMapping("/form")
     public String showUserForm(@RequestParam(required = false) Long id, Model model) {
@@ -107,7 +106,17 @@ public class UserControllerWEB {
         return "redirect:/users";
     }
 
-    @PostMapping("/{id}/delete")
+    @GetMapping("/delete/{id}")
+    public String deleteUserConfirm(@PathVariable Long id, Model model) {
+        User user = userService.findById(id).orElse(null);
+        if (user == null) {
+            return "redirect:/users";
+        }
+        model.addAttribute("user", user);
+        return "users/delete";
+    }
+
+    @PostMapping("/delete/{id}")
     public String deleteUser(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         userService.deleteById(id);
         redirectAttributes.addFlashAttribute("flash", "User deleted successfully");

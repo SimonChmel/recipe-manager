@@ -5,7 +5,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>User List</title>
+  <title>User Form</title>
 </head>
 <body>
 
@@ -20,23 +20,21 @@
 
 <form:form method="post" modelAttribute="user" action="${pageContext.request.contextPath}/users/save">
     <form:hidden path="id"/>
-    <table>
+    <table border="1">
         <tr>
             <td>Username:</td>
             <td><form:input path="username"/></td>
-            <td><p><form:errors path="username" cssStyle="color: red"/></p></td>
-
+            <td><form:errors path="username" cssStyle="color: red"/></td>
+        </tr>
         <tr>
             <td>Email:</td>
             <td><form:input path="email"/></td>
             <td><form:errors path="email" cssStyle="color: red"/></td>
-
         </tr>
         <tr>
             <td>Password:</td>
             <td><form:password path="password"/></td>
             <td><form:errors path="password" cssStyle="color: red"/></td>
-
         </tr>
         <tr>
             <td>Role:</td>
@@ -48,10 +46,12 @@
             </td>
         </tr>
     </table>
-    <input type="submit" value="<c:choose>
-                                            <c:when test='${user.id != null}'>Update</c:when>
-                                            <c:otherwise>Create</c:otherwise>
-                                         </c:choose>" />
+    <button type="submit">
+        <c:choose>
+            <c:when test='${user.id != null}'>Update</c:when>
+            <c:otherwise>Create</c:otherwise>
+        </c:choose>
+    </button>
 </form:form>
 <%@ include file="/WEB-INF/views/_layout/footer.jspf" %>
 </body>

@@ -28,6 +28,22 @@ public class RecipeService extends BaseService<Recipe, Long> {
         return recipeRepository;
     }
 
+    public Recipe editRecipe(Long id, Recipe editRecipe) {
+        return recipeRepository.findById(id)
+                .map(existing -> {
+                    if (editRecipe.getName() != null && !editRecipe.getName().isBlank()) {
+                        existing.setName(editRecipe.getName());
+                    }
+                    if (editRecipe.getDescription() != null && !editRecipe.getDescription().isBlank()) {
+                        existing.setDescription(editRecipe.getDescription());
+                    }
+                    if (editRecipe.getIngredients() != null && !editRecipe.getIngredients().isEmpty()) {
+                        existing.setIngredients(editRecipe.getIngredients());
+                    }
+                    return recipeRepository.save(existing);
+                }).orElseThrow(() -> new IllegalArgumentException("Recipe not found"));
+    }
+
     public Recipe addIngredient(Long recipeId, Long ingredientId, double quantity, String unit) {
         Recipe recipe = recipeRepository
                 .findById(recipeId)

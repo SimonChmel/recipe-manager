@@ -1,12 +1,25 @@
-<jsp:include page="/WEB-INF/views/_layout/header.jspf"/>
-<jsp:include page="/WEB-INF/views/messages.jsp"/>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://www.springframework.org/security/tags" prefix="s" %>
-<h2>Recipe Details: ${recipe.name}</h2>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>User Detail</title>
+</head>
+<body>
+
+<%@ include file="/WEB-INF/views/_layout/header.jspf" %>
+
+<h2>Recipe Detail</h2>
+<p></p>
 <h3>Ingredients</h3>
-<table>
+<table border="1">
     <thead>
-    <tr><th>Name</th><th>Quantity</th><th>Unit</th><th>Actions</th></tr>
+        <tr>
+            <th>Name</th>
+            <th>Quantity</th>
+            <th>Unit</th>
+            <th>Actions</th>
+        </tr>
     </thead>
     <tbody>
     <c:forEach var="ri" items="${recipe.ingredients}">
@@ -49,4 +62,6 @@
 
 <a href="${pageContext.request.contextPath}/recipes">Back to Recipes</a>
 
-<jsp:include page="/WEB-INF/views/_layout/footer.jspf"/>
+<%@ include file="/WEB-INF/views/_layout/footer.jspf" %>
+</body>
+</html>

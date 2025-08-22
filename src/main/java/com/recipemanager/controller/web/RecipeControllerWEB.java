@@ -4,7 +4,9 @@ import com.recipemanager.dto.RecipeDTO;
 import com.recipemanager.dto.RecipeIngredientDTO;
 import com.recipemanager.mapper.RecipeMapper;
 import com.recipemanager.model.Recipe;
+import com.recipemanager.service.IngredientService;
 import com.recipemanager.service.RecipeService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -13,12 +15,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Optional;
+
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/web/recipes")
+@RequestMapping("/recipes")
 public class RecipeControllerWEB {
-
     private final RecipeService recipeService;
+    private final IngredientService ingredientService;
     private final RecipeMapper recipeMapper;
 
     @GetMapping
@@ -27,60 +31,94 @@ public class RecipeControllerWEB {
         return "recipes/list";
     }
 
-    @GetMapping("/recipe-detail/{id}")
+    @GetMapping("/recipe/{id}")
     public String getRecipeDetails(@PathVariable Long id, Model model) {
+        Recipe recipe = recipeService.findById(id).orElseThrow(EntityNotFoundException::new);
+        if (recipe == null) {
+            return "redirect:/recipes";
+        }
         model.addAttribute("recipe", recipeService.findById(id));
         return "recipes/recipe";
     }
 
-    @GetMapping("/create")
-    public String createRecipeForm(Model model) {
-        model.addAttribute("recipe", new RecipeDTO());
+    @GetMapping("/form")
+    public String showRecipeForm(@RequestParam(required = false) Long id, Model model) {
+        RecipeDTO recipeDTO;
+        if (id != null) {
+            Recipe editRecipe = recipeService.findById(id).orElseThrow(EntityNotFoundException::new);
+            recipeDTO = recipeMapper.toRecipeDTO(editRecipe);
+        } else {
+            recipeDTO = new RecipeDTO();
+        }
+        model.addAttribute("recipe", recipeDTO);
         return "recipes/form";
     }
 
-    @PostMapping("/create")
-    public String createRecipe(@Valid @ModelAttribute ("recipe") RecipeDTO recipeDTO,
-                               RedirectAttributes redirectAttributes,
+    @PostMapping("/save")
+    public String saveRecipe(@Valid @ModelAttribute("recipe") RecipeDTO recipeDTO,
                                BindingResult result,
-                               RedirectAttributes redirectAttribute) {
+                               RedirectAttributes redirectAttributes) {
+        Optional<Recipe> existingRecipe = recipeService.findByName(recipeDTO.getName());
+        if (existingRecipe.isPresent() &&
+                (recipeDTO.getId() == null || !existingRecipe.get().getId().equals(recipeDTO.getId()))) {
+            result.rejectValue("name", "recipe.name.exists", "Recipe name already exists");
+        }
         if (result.hasErrors()) {
             return "recipes/form";
         }
-        recipeService.save(recipeMapper.toEntity(recipeDTO));
-        redirectAttribute.addFlashAttribute("flash", "Recipe created successfully");
+        if (recipeDTO.getId() == null) {
+            recipeService.save(recipeMapper.toEntity(recipeDTO));
+            redirectAttributes.addFlashAttribute("flash", "Recipe saved successfully");
+        } else {
+            recipeService.editRecipe(recipeDTO.getId(), recipeMapper.toEntity(recipeDTO));
+            redirectAttributes.addFlashAttribute("message", "Recipe edited successfully");
+        }
         return "redirect:/recipes";
     }
 
-    @GetMapping("/edit/{id}")
-    public String editRecipeForm(@PathVariable Long id, Model model) {
-        Recipe recipe = recipeService.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Recipe not found with id: " + id));
-        model.addAttribute("recipe", recipeMapper.toRecipeDTO(recipe));
-        return "recipes/form";
-    }
+//    @GetMapping("/edit/{id}")
+//    public String editRecipeForm(@PathVariable Long id, Model model) {
+//        Recipe recipe = recipeService.findById(id)
+//                .orElseThrow(() -> new IllegalArgumentException("Recipe not found with id: " + id));
+//        model.addAttribute("recipe", recipeMapper.toRecipeDTO(recipe));
+//        return "recipes/form";
+//    }
 
     @PostMapping("/edit/{id}")
-    public String editRecipe(@PathVariable Long id, @ModelAttribute ("recipe") RecipeDTO recipeDTO, RedirectAttributes redirectAttributes) {
-        if (recipeService.findById(id).isPresent()) {
-            recipeService.save(recipeMapper.toEntity(recipeDTO));
+    public String editRecipe(@PathVariable Long id, @Valid RecipeDTO recipeDTO, BindingResult result) {
+        Optional<Recipe> existingRecipe = recipeService.findByName(recipeDTO.getName());
+        if (existingRecipe.isPresent() && !existingRecipe.get().getId().equals(id)) {
+            result.rejectValue("name", "recipe.name.exists", "Recipe name already exists");
         }
-        redirectAttributes.addFlashAttribute("flash", "Recipe updated successfully");
+        if (result.hasErrors()) {
+            return "recipes/form";
+        }
+        recipeService.editRecipe(id, recipeMapper.toEntity(recipeDTO));
         return "redirect:/recipes";
     }
 
-    @DeleteMapping("/delete/{id}")
-    public String deleteRecipeForm(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    @GetMapping("/delete/{id}")
+    public String deleteRecipeConfirm(@PathVariable Long id, Model model) {
+        Recipe recipe = recipeService.findById(id).orElse(null);
+        if (recipe == null) {
+            return "redirect:/recipes";
+        }
+        model.addAttribute("recipe", recipe);
+        return "recipes/delete";
+    }
+
+    @PostMapping("/delete/{id}")
+    public String deleteRecipe(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         recipeService.deleteById(id);
         redirectAttributes.addFlashAttribute("message", "Recipe deleted successfully");
         return "redirect:/recipes";
     }
 
-    @GetMapping("/{id}/ingredients/add")
-    public String addIngredientForm(@PathVariable Long id, Model model) {
+    @GetMapping("/ingredients/add/{id}")
+    public String addIngredientForm(@PathVariable("id") Long recipeId, Model model) {
         model.addAttribute("ingredient", new RecipeIngredientDTO());
-        model.addAttribute("recipeId", id);
-        return "recipes/add-ingredients";
+        model.addAttribute("recipeId", recipeId);
+        return "recipes/ingredients";
     }
 
     @PostMapping("/{id}/ingredients/add")

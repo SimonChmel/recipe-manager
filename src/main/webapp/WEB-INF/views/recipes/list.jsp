@@ -1,29 +1,33 @@
-<jsp:include page="/WEB-INF/views/_layout/header.jspf"/>
-<jsp:include page="/WEB-INF/views/messages.jsp"/>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://www.springframework.org/security/tags" prefix="s" %>
-<h2>All Recipes</h2>
-<table>
-    <thead>
-    <tr><th>ID</th><th>Name</th><th>Actions</th></tr>
-    </thead>
-    <tbody>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Recipe List</title>
+</head>
+<body>
+
+<%@ include file="/WEB-INF/views/_layout/header.jspf" %>
+
+<h2>Recipe List</h2>
+<table border="1">
+    <tr>
+        <th>Name</th>
+    </tr>
     <c:forEach var="recipe" items="${recipes}">
         <tr>
-            <td>${recipe.id}</td>
-            <td><a href="${pageContext.request.contextPath}/recipes/${recipe.id}">${recipe.name}</a></td>
+            <td><c:out value="${recipe.name}"/></td>
             <td>
-                <a href="${pageContext.request.contextPath}/recipes/${recipe.id}/edit">Edit</a>
-                <form action="${pageContext.request.contextPath}/recipes/${recipe.id}/delete" method="post" style="display:inline;">
-                    <s:csrfInput/>
-                    <button type="submit" onclick="return confirm('Delete this recipe?')">Delete</button>
-                </form>
+                <a href="${pageContext.request.contextPath}/recipes/form?id=${recipe.id}">Edit</a>
+                <a href="${pageContext.request.contextPath}/recipes/delete/${recipe.id}">Delete</a>
+                <a href="${pageContext.request.contextPath}/recipes/recipe/${recipe.id}">Show</a>
             </td>
         </tr>
     </c:forEach>
-    </tbody>
 </table>
+<a href="${pageContext.request.contextPath}/recipes/form">Add Recipe</a>
 
-<a href="${pageContext.request.contextPath}/recipes/new">Add Recipe</a>
-
-<jsp:include page="/WEB-INF/views/_layout/footer.jspf"/>
+<%@ include file="/WEB-INF/views/_layout/footer.jspf" %>
+</body>
+</html>

@@ -4,6 +4,7 @@ import com.recipemanager.model.User;
 import com.recipemanager.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ public class UserService extends BaseService<User, Long> {
         return userRepository;
     }
 
-    public User registerNewUser(User user) {
+    public User registerNewUser(@NotNull User user) {
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
             throw new IllegalArgumentException("User already exists");
         }

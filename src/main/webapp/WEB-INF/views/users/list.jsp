@@ -13,20 +13,16 @@
 <h2>User List</h2>
 <table border="1">
     <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Email</th>
+        <th>Username</th>
     </tr>
     <c:forEach var="user" items="${users}">
         <tr>
-            <td><c:out value="${user.id}"/></td>
             <td><c:out value="${user.username}"/></td>
-            <td><c:out value="${user.email}"/></td>
             <td>
-            <a href="${pageContext.request.contextPath}/users/form?id=${user.id}">Edit</a>
-            <a href="<c:out value="/users/delete/${user.id}"/>">Delete</a>
-            <a href="<c:out value="/users/user/${user.id}"/>">Show</a>
-        </td>
+                <a href="${pageContext.request.contextPath}/users/form?id=${user.id}">Edit</a>
+                <a href="<c:out value="/users/delete/${user.id}"/>">Delete</a>
+                <a href="${pageContext.request.contextPath}/users/user/${user.id}">Show</a>
+            </td>
         </tr>
     </c:forEach>
 </table>

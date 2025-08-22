@@ -23,6 +23,7 @@ public class UserDTO {
     @Size(min = 6, max = 100, message = "Must be 6 to 100 characters long")
     private String password;
 
+    @NotBlank(message = "Email required")
     @Email(message = "Invalid email format")
     @Size(max = 255)
     private String email;
