@@ -1,4 +1,4 @@
-package com.recipemanager.mapper;
+package com.recipemanager.util.mapper;
 
 import com.recipemanager.dto.RecipeDTO;
 import com.recipemanager.dto.RecipeIngredientDTO;

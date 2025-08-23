@@ -22,7 +22,6 @@ public class IngredientService extends BaseService<Ingredient, Long> {
     }
 
     public Optional<Ingredient> findAlternative(Ingredient ingredient){
-        // placeholder for possible AI
         return ingredientRepository
                 .findAll()
                 .stream()

@@ -46,11 +46,11 @@ management (with roles and authentication).
 ## Project Structure
 
     src/main/java/com/recipemanager
-     ├── config         # Security and general app configuration
      ├── controller     # REST API controllers + JSP Web controllers
      ├── dto            # DTOs for data transfer to/from web layer
      ├── model          # Entities (User, Recipe, Ingredient, RecipeIngredient)
      ├── repository     # Spring Data JPA repositories
+     ├── security       # Security
      ├── service        # Business logic (UserService, RecipeService, IngredientService)
      └── util           # Helper classes (mappers, similarity calculation)
 
@@ -59,6 +59,7 @@ management (with roles and authentication).
      ├── users/         # List, form pages for user management
      ├── recipes/       # List, form, detail pages for recipe management
      └── error.jsp      # Global error page
+     
 
 ------------------------------------------------------------------------
 

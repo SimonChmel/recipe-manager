@@ -2,7 +2,9 @@ package com.recipemanager.controller.web;
 
 import com.recipemanager.dto.RecipeDTO;
 import com.recipemanager.dto.RecipeIngredientDTO;
-import com.recipemanager.mapper.RecipeMapper;
+import com.recipemanager.model.Ingredient;
+import com.recipemanager.model.RecipeIngredient;
+import com.recipemanager.util.mapper.RecipeMapper;
 import com.recipemanager.model.Recipe;
 import com.recipemanager.service.IngredientService;
 import com.recipemanager.service.RecipeService;
@@ -15,6 +17,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -37,7 +40,13 @@ public class RecipeControllerWEB {
         if (recipe == null) {
             return "redirect:/recipes";
         }
-        model.addAttribute("recipe", recipeService.findById(id));
+        model.addAttribute("recipe", recipe);
+
+        List<RecipeIngredientDTO> ingredients = recipeService.getIngredientsForRecipe(recipe.getId());
+        if (ingredients == null) {
+            return "redirect:/recipe";
+        }
+        model.addAttribute("ingredients", ingredients);
         return "recipes/recipe";
     }
 
@@ -76,14 +85,6 @@ public class RecipeControllerWEB {
         return "redirect:/recipes";
     }
 
-//    @GetMapping("/edit/{id}")
-//    public String editRecipeForm(@PathVariable Long id, Model model) {
-//        Recipe recipe = recipeService.findById(id)
-//                .orElseThrow(() -> new IllegalArgumentException("Recipe not found with id: " + id));
-//        model.addAttribute("recipe", recipeMapper.toRecipeDTO(recipe));
-//        return "recipes/form";
-//    }
-
     @PostMapping("/edit/{id}")
     public String editRecipe(@PathVariable Long id, @Valid RecipeDTO recipeDTO, BindingResult result) {
         Optional<Recipe> existingRecipe = recipeService.findByName(recipeDTO.getName());
@@ -114,18 +115,19 @@ public class RecipeControllerWEB {
         return "redirect:/recipes";
     }
 
-    @GetMapping("/ingredients/add/{id}")
-    public String addIngredientForm(@PathVariable("id") Long recipeId, Model model) {
+    @GetMapping("/ingredient")
+    public String showIngredientForm(@RequestParam(required = false) Long recipeId, Model model) {
+
         model.addAttribute("ingredient", new RecipeIngredientDTO());
         model.addAttribute("recipeId", recipeId);
-        return "recipes/ingredients";
+        return "recipes/form";
     }
 
-    @PostMapping("/{id}/ingredients/add")
+    @PostMapping("/ingredients/add/{id}")
     public String addIngredient(@PathVariable Long id, @ModelAttribute RecipeIngredientDTO ingredientDTO, RedirectAttributes redirectAttributes) {
         recipeService.addIngredient(id, ingredientDTO.getIngredientId(), ingredientDTO.getQuantity(), ingredientDTO.getUnit());
         redirectAttributes.addFlashAttribute("message", "Ingredient added successfully");
-        return "redirect:/recipes/edit/" + id;
+        return "redirect:/recipes/form";
     }
 
     @DeleteMapping("/{recipeId}/ingredients/delete/{ingredientId}")

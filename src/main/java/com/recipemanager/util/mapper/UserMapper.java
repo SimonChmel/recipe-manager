@@ -1,4 +1,4 @@
-package com.recipemanager.mapper;
+package com.recipemanager.util.mapper;
 
 import com.recipemanager.dto.UserDTO;
 import com.recipemanager.model.User;

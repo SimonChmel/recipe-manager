@@ -2,7 +2,7 @@ package com.recipemanager.controller.api;
 
 import com.recipemanager.dto.RecipeDTO;
 import com.recipemanager.dto.RecipeIngredientDTO;
-import com.recipemanager.mapper.RecipeMapper;
+import com.recipemanager.util.mapper.RecipeMapper;
 import com.recipemanager.model.Recipe;
 import com.recipemanager.service.RecipeService;
 import jakarta.validation.Valid;

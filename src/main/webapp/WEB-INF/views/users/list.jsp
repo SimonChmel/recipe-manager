@@ -8,12 +8,13 @@
 </head>
 <body>
 
-<%@ include file="/WEB-INF/views/_layout/header.jspf" %>
+<%@ include file="/WEB-INF/views/layout/header.jspf" %>
 
 <h2>User List</h2>
 <table border="1">
     <tr>
         <th>Username</th>
+        <th>Action</th>
     </tr>
     <c:forEach var="user" items="${users}">
         <tr>
@@ -27,6 +28,6 @@
     </c:forEach>
 </table>
 <a href="${pageContext.request.contextPath}/users/form">Add User</a>
-<%@ include file="/WEB-INF/views/_layout/footer.jspf" %>
+<%@ include file="/WEB-INF/views/layout/footer.jspf" %>
 </body>
 </html>

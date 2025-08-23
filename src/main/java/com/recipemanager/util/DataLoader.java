@@ -1,4 +1,4 @@
-package com.recipemanager;
+package com.recipemanager.util;
 
 import com.recipemanager.model.Ingredient;
 import com.recipemanager.model.IngredientProfile;

@@ -8,12 +8,13 @@
 </head>
 <body>
 
-<%@ include file="/WEB-INF/views/_layout/header.jspf" %>
+<%@ include file="/WEB-INF/views/layout/header.jspf" %>
 
 <h2>Recipe List</h2>
 <table border="1">
     <tr>
-        <th>Name</th>
+        <th>Recipe</th>
+        <th>Action</th>
     </tr>
     <c:forEach var="recipe" items="${recipes}">
         <tr>
@@ -28,6 +29,6 @@
 </table>
 <a href="${pageContext.request.contextPath}/recipes/form">Add Recipe</a>
 
-<%@ include file="/WEB-INF/views/_layout/footer.jspf" %>
+<%@ include file="/WEB-INF/views/layout/footer.jspf" %>
 </body>
 </html>

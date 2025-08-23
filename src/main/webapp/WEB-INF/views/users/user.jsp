@@ -8,7 +8,7 @@
 </head>
 <body>
 
-<%@ include file="/WEB-INF/views/_layout/header.jspf" %>
+<%@ include file="/WEB-INF/views/layout/header.jspf" %>
 
 <h2>User Detail</h2>
 <table border="1">
@@ -29,6 +29,6 @@
 </table>
 
 <a href="${pageContext.request.contextPath}/users">Back to Users</a>
-<%@ include file="/WEB-INF/views/_layout/footer.jspf" %>
+<%@ include file="/WEB-INF/views/layout/footer.jspf" %>
 </body>
 </html>

@@ -1,7 +1,7 @@
 package com.recipemanager.controller.api;
 
 import com.recipemanager.dto.UserDTO;
-import com.recipemanager.mapper.UserMapper;
+import com.recipemanager.util.mapper.UserMapper;
 import com.recipemanager.model.User;
 import com.recipemanager.service.UserService;
 import jakarta.validation.Valid;

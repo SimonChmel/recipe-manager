@@ -38,10 +38,10 @@ public class RecipeIngredient {
     private String unit;
 
     // Convenience constructor for DataLoader (without id)
-    public RecipeIngredient(Recipe recipe, Ingredient ingredient, int i, String unit) {
+    public RecipeIngredient(Recipe recipe, Ingredient ingredient, int quantity, String unit) {
         this.recipe = recipe;
         this.ingredient = ingredient;
-        this.quantity = i;
+        this.quantity = quantity;
         this.unit = unit;
     }
 }

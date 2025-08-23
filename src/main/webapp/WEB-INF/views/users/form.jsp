@@ -9,7 +9,7 @@
 </head>
 <body>
 
-<%@ include file="/WEB-INF/views/_layout/header.jspf" %>
+<%@ include file="/WEB-INF/views/layout/header.jspf" %>
 
 <h2>
     <c:choose>
@@ -23,18 +23,15 @@
     <table border="1">
         <tr>
             <td>Username:</td>
-            <td><form:input path="username"/></td>
-            <td><form:errors path="username" cssStyle="color: red"/></td>
+            <td><form:input path="username"/><form:errors path="username" cssStyle="color: red"/></td>
         </tr>
         <tr>
             <td>Email:</td>
-            <td><form:input path="email"/></td>
-            <td><form:errors path="email" cssStyle="color: red"/></td>
+            <td><form:input path="email"/><form:errors path="email" cssStyle="color: red"/></td>
         </tr>
         <tr>
             <td>Password:</td>
-            <td><form:password path="password"/></td>
-            <td><form:errors path="password" cssStyle="color: red"/></td>
+            <td><form:password path="password"/><form:errors path="password" cssStyle="color: red"/></td>
         </tr>
         <tr>
             <td>Role:</td>
@@ -53,6 +50,6 @@
         </c:choose>
     </button>
 </form:form>
-<%@ include file="/WEB-INF/views/_layout/footer.jspf" %>
+<%@ include file="/WEB-INF/views/layout/footer.jspf" %>
 </body>
 </html>
